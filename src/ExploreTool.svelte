@@ -19,7 +19,7 @@
     let width;
     let height;
     const margin = { top: 30, bottom: 30, left: 30, right: 30 };
-    const chartPadding = 20;
+    const chartPadding = 30;
     $: chartWidth = width - margin.left - margin.right;
     $: chartHeight = (height - margin.top - margin.bottom - chartPadding) / 2;
 
@@ -70,11 +70,32 @@
     let src;
     let audio;
     let counties = [3, 65, 79, 109, 125, 540];
+    let show = false;
+    let isPlaying = false;
 
     let selectChange = () => {
-        // audio.pause();
-        // src = `data/local_county_${selected}_v1.wav`;
+        if (audio) audio.pause();
+        isPlaying = false;
+        show = false;
     };
+
+    let play = () => {
+        show = true;
+    }
+
+    let playToggle = () => {
+        if (isPlaying) {
+            isPlaying = false;
+            show = false;
+            if (audio) audio.pause();
+        } else {
+            isPlaying = true;
+            show = true;
+            src = `data/local_county_${selected}_v1.wav`;
+            audio = new Audio(src);
+            audio.play();
+        }
+    }
 
     // animations
 
@@ -97,6 +118,14 @@
             </option>
         {/each}
     </select>
+
+    <button on:click={playToggle}>
+        {#if isPlaying} 
+            stop
+        {:else}
+            play
+        {/if}
+    </button>
     <svg {width} {height}>
         <!-- co2 line plot -->
 
@@ -114,6 +143,8 @@
             </g>
             {/each}
         </g>
+
+        {#if show}
 
         <Line 
             data={data.co2}
@@ -134,6 +165,8 @@
             colorScale={heat_colorScale}
             height={chartHeight}
         />
+
+        {/if}
     </svg>
 </div>
 

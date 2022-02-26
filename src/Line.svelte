@@ -1,8 +1,9 @@
 <script>
     // imports
     import { draw } from 'svelte/transition';
+    import { linear } from 'svelte/easing';
     import { onMount } from 'svelte';
-    import { line } from 'd3';
+    import { line, extent } from 'd3';
 
     // props
     export let data;
@@ -16,21 +17,18 @@
         .x(d => xScale(xAccessor(d)))
         .y(d => yScale(yAccessor(d)));
 
-    let show = false;
-    onMount(() => show = true);
+    $: console.log(data);
 
 </script>
 
 <g {transform}>
-    {#if show}
-        <path transition:draw="{{duration: 120*1000}}"
-            class="line"  
-            d="{path(data)}"
-            fill="none"
-            stroke="#A31A2C"
-            stroke-width=2        
-        />
-    {/if}
+    <path in:draw="{{duration: 63*(240000/130), delay: 8*(240000/130) + 500, easing: t => t}}"
+        class="line"  
+        d="{path(data)}"
+        fill="none"
+        stroke="#A31A2C"
+        stroke-width=2        
+    />
 </g>
 
 <style>
