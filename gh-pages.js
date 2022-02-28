@@ -1,6 +1,6 @@
-import { publish } from 'gh-pages';
+var ghpages = require('gh-pages');
 
-publish(
+ghpages.publish(
  'build', // path to public directory
  {
   branch: 'gh-pages',
@@ -8,9 +8,8 @@ publish(
   user: {
    name: 'Chase Dawson', // update to use your name
    email: 'scd3dz@virginia.edu' // Update to use your email
-  },
-  dotfiles: true
-  },
+  }
+}, 
   () => {
    console.log('Deploy Complete!');
   }
