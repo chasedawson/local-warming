@@ -1,7 +1,7 @@
 var ghpages = require('gh-pages');
 
 ghpages.publish(
- 'build', // path to public directory
+ 'public', // path to public directory
  {
   branch: 'gh-pages',
   repo: 'https://github.com/chasedawson/local-warming.git', // Update to point to your repository
