@@ -2,6 +2,7 @@
 	// imports 
 	import { scaleLinear, extent, scaleSequential, interpolateRdBu, ticks, scaleDiverging } from 'd3';
 	import { tweened } from 'svelte/motion';
+	import { fade } from 'svelte/transition';
 	
 	// props
 	export let data;
@@ -29,19 +30,15 @@
 	// toggle() switches between uniform height heatstripe and varying height heatstripe
 	const toggle = () => {
 		if (isUniform) {
-			// set bar height to absolute value of y value instead of full chart height 
-			tweenedBarHeight.set(data.map(d => yScale(Math.abs(yAccessor(d)))));
+			tweenedBarHeight.set(data.map(d => {
+				if (yAccessor(d) < 0) return yScale(yAccessor(d)) - zeroYPos;
+				else return zeroYPos - yScale(yAccessor(d)); 
+			}));
 
 			// change starting y position
 			tweenedY.set(data.map(d => {
-
-				// if y value is negative, the rect is drawn from the middle of the graph, 
-				// so chartheight / 2
-				if (yAccessor(d) < 0) return chartHeight / 2;
-
-				// if the y value is positive, the rect is drawn from the middle of the graph 
-				// minus the height of the rect
-				else return (chartHeight / 2) - yScale(Math.abs(yAccessor(d)));
+				if (yAccessor(d) < 0) return zeroYPos;
+				else return yScale(yAccessor(d));
 			}));
 		} else {
 			// return to uniform
@@ -67,9 +64,18 @@
 		.domain(yExtent[0], yExtent[1])
 		.domain([0, 1])
 
+	// $: yScale = scaleLinear()
+	// 	.domain(yAbsExtent)
+	// 	.range([0, chartHeight / 2]);
+
+
+	// create temp, unused y scale to determine where 0 should be on the chart
 	$: yScale = scaleLinear()
-		.domain(yAbsExtent)
-		.range([0, chartHeight / 2]);
+		.domain(yExtent)
+		.range([chartHeight, 0]);
+	$: zeroYPos = yScale(0);
+
+	$: console.log(yExtent, yScale, zeroYPos, chartHeight);
 	
 	// color and y will access the same variable
 	$: colorScale = scaleDiverging(t => interpolateRdBu(1 - t))
@@ -109,27 +115,19 @@
 			</g>
 
 			<!-- y axis -->
-			<g transform="translate({margin.left}, {margin.top})">
-				<path stroke="#ccc" d="{yPath}" fill="none" />
-				{#each yTicks as y} 
-					{#if y > 0}
-						<g class="ytick" transform="translate(-5, {(chartHeight / 2) - yScale(Math.abs(y))})">
-							<line stroke="#ccc" x2="-6" />							
-							<text dx="-10" dy="6" text-anchor="end">
-								{y}
-							</text>
-						</g>
-					{:else}
-						<!-- for y <= 0 -->
-						<g class="ytick" transform="translate(-5, {(chartHeight / 2) + yScale(Math.abs(y))})">
+			{#if !isUniform}
+				<g transform="translate({margin.left}, {margin.top})" transition:fade>
+					<path stroke="#ccc" d="{yPath}" fill="none" />
+					{#each yTicks as y} 
+						<g class="ytick" transform="translate(-5, {yScale(y)})">
 							<line stroke="#ccc" x2="-6" />
-							<text dx="-10" dy="6" text-anchor="end">
+							<text text-anchor="end" dx="-10" dy="5">
 								{y}
 							</text>
 						</g>
-					{/if}
-				{/each}
-			</g>
+					{/each}
+				</g>
+			{/if}
 
 			<!-- actual viz -->
 			<!-- height={$tweenedBarHeight[i]}, y={$tweenedY[i]} -->
@@ -137,9 +135,9 @@
 				{#each data as d, i}
 					<rect 
 						x={xScale(xAccessor(d))}
-						y={0}
+						y={$tweenedY[i]}
 						width={barWidth}
-						height={chartHeight}
+						height={$tweenedBarHeight[i]}
 						style="fill: {colorScale(yAccessor(d))}"
 					/>
 				{/each}

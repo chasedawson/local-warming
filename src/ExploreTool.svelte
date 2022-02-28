@@ -64,12 +64,13 @@
     // axes paths
     $: co2_yPath = `M 0 0 V ${chartHeight}`;
     let co2_yTicks = ticks(co2_yDomain[0], co2_yDomain[1], 10);
-
+    let xTicks = ticks(heat_xDomain[0].getFullYear(), heat_xDomain[1].getFullYear(), 10);
     // audio / selection
     let selected = 540;
     let src;
     let audio;
-    let counties = [3, 65, 79, 109, 125, 540];
+    // let counties = [3, 65, 79, 109, 125, 540];
+    let counties = new Map([[3, "Albemarle"], [65, "Fluvanna"], [79, "Greene"], [109, "Louisa"], [125, "Nelson"], [540, "Charlottesville City"]]);
     let show = false;
     let isPlaying = false;
 
@@ -112,9 +113,9 @@
 -->
 
     <select bind:value={selected} on:change={selectChange}>
-        {#each counties as d}
-            <option value={d}>
-                {d}
+        {#each Array.from(counties.keys()) as k}
+            <option value={k}>
+                {counties.get(k)}
             </option>
         {/each}
     </select>
@@ -127,8 +128,20 @@
         {/if}
     </button>
     <svg {width} {height}>
-        <!-- co2 line plot -->
+        <!-- sonification range box-->
+        <g transform="translate({margin.left + heat_xScale(new Date(1950, 0))}, {margin.top - 10})">
+            <text dy="-5" font-weight=200>sonification range</text>
+            <rect 
+                x={0} 
+                y={0} 
+                width={heat_xScale(new Date(2021, 0)) - heat_xScale(new Date(1950, 0))} 
+                height={chartHeight*2 + chartPadding + 20}
+                fill="#eee"  
+                fill-opacity=0.5
+            />
+        </g>
 
+        <!-- co2, y axis -->
         <g transform="translate({margin.left}, {margin.top})">
             {#each co2_yTicks as y, i}
             <g class="co2-ytick" transform="translate(0, {co2_yScale(y)})">
@@ -144,35 +157,49 @@
             {/each}
         </g>
 
+        <!-- x axis, year -->
+        <g transform="translate({margin.left}, {margin.top + chartHeight + (chartPadding/2)})">
+            {#each xTicks as x}
+                <g class="xtick" transform="translate({heat_xScale(new Date(x, 0))}, 0)">
+                    <text text-anchor="middle" >
+                        {x}
+                    </text>
+                </g>
+            {/each}
+        </g>
+
+
+
         {#if show}
 
-        <Line 
-            data={data.co2}
-            transform="translate({margin.left}, {margin.top})"
-            xAccessor={co2.xAccessor}
-            yAccessor={co2.yAccessor}
-            xScale={heat_xScale}
-            yScale={co2_yScale}
-            duration={10000}
-        />
+            <Line 
+                data={data.co2.filter(d => +d.year >= 1959)}
+                transform="translate({margin.left}, {margin.top})"
+                xAccessor={co2.xAccessor}
+                yAccessor={co2.yAccessor}
+                xScale={heat_xScale}
+                yScale={co2_yScale}
+                duration={10000}
+            />
 
-        <Stripes 
-            data={data.local_temp.filter(d => +d.county === selected)}
-            transform="translate({margin.left}, {margin.top + chartHeight + chartPadding})"
-            xAccessor={heat.xAccessor}
-            colorAccessor={heat.colorAccessor}
-            xScale={heat_xScale}
-            colorScale={heat_colorScale}
-            height={chartHeight}
-        />
+            <Stripes 
+                data={data.local_temp.filter(d => +d.county === selected)}
+                transform="translate({margin.left}, {margin.top + chartHeight + chartPadding})"
+                xAccessor={heat.xAccessor}
+                colorAccessor={heat.colorAccessor}
+                xScale={heat_xScale}
+                colorScale={heat_colorScale}
+                height={chartHeight}
+            />
 
         {/if}
+
     </svg>
 </div>
 
 <style>
     .explore {
         height: 80vh;
-        max-width: 80%;
+        max-width: 100%;
     }
 </style>

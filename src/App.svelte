@@ -45,15 +45,15 @@
 	
 	const steps = [
 		[
-			"<p>general intro/overview of climate change and relationship between greenhouse gases (ghgs) and global temperature</p>",
-			"<p>explain 1.5 / 2 degrees warming in Celcius, what does it mean, why was it chosen, in relation to what?</p>",
-			"<p>Play Audio?</p>",
-			"<p>Pausing Audio!</p>"
+			"<p>Global warming first became a public issue on June 23, 1988, when the undeniable link between greenhouse gas emissions and global temperatures was presented before the U.S. Senate Energy and Natural Resources Committee. Of course, this was hardly the first time anyone had spoken about the issue–yet it marked the moment in which the climate crisis entered public consciousness.</p>",
+			"<p>By now, most of us are all too familiar with the chart on the right, marking the steady, ever-increasing carbon dioxide (CO2) emissions in our atmosphere. Of course, CO2 is just one of many greenhouse gasses emitted by human activities, yet it is our most abundantly produced.</p>",
+			"<p>In this story, we’re asking not just how CO2 has impacted global temperatures but also how will global warming impact us here in Charlottesville? We combine visualization and sonification techniques so that you’re not just seeing the changes in your home–you’re hearing them as well. Hopefully, you walk away with a greater understanding of how global warming is going to affect you here, locally.</p>",
+			"<p>To accomplish that, you must get acquainted with the sonification elements. Use the play button below to hear our encoding of CO2. We mapped the CO2 levels in parts per million to the pitch of a siren-y note–you should hear it get higher and higher with time.</p> <button>play</button>"
 		],
 		[
-			"<p>description of a heatstripe chart</p>",
-			"<p>Toggle!</p>",
-			"<p>what does a warmer year sound like?</p>",
+			"<p>CO2 is only part of the picture. To better understand the relationship between CO2 and warming, we also need to look at global temperature.</p>",
+			"<p>Temperature anomaly is a common way of talking about warming relative to the baseline period, often preindustrial times. Each stripe represents temperature change in °C  relative to the 20th century average.</p>",
+			"<p>Use the play button below to hear our encoding of temperature. We mapped temperature anomalies to a melody played in varying octaves. A year lasts 4 beats. Higher sounding melodies means that year was warmer.</p> <button>play</button>",
 			"<p>Toggle Again!</p>"
 		]
 	];

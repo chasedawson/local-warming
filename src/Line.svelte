@@ -22,7 +22,7 @@
 </script>
 
 <g {transform}>
-    <path in:draw="{{duration: 63*(240000/130), delay: 8*(240000/130) + 500, easing: t => t}}"
+    <path in:draw="{{duration: 63*(240000/130), delay: 9*(240000/130) + 500, easing: t => t}}"
         class="line"  
         d="{path(data)}"
         fill="none"

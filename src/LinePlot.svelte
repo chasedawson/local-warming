@@ -88,7 +88,7 @@
 			<path in:draw="{{duration: 8*1000}}"
 				d="{path(data)}"
 				fill="none"
-				stroke="red"
+				stroke="#A31A2C"
 				stroke-width=2
 				class="co2-line"
 			/>

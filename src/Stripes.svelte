@@ -1,7 +1,7 @@
 <script>
     // imports
     import { scaleLinear, scaleDiverging, interpolateRdBu } from "d3";
-    import { fly } from 'svelte/transition';
+    import { fly, fade } from 'svelte/transition';
 
     // props
     export let data;
@@ -42,7 +42,8 @@
 <g {transform}>
     {#each data as d, i}
         {#if +d.year < 1950}
-            <rect
+            <rect 
+                transition:fade
                 x={xScale(xAccessor(d))}
                 y={0}
                 width={barWidth}
@@ -50,7 +51,9 @@
                 style="fill: {colorScale(colorAccessor(d))}"
             />
         {:else}
-            <rect in:fly="{{duration: (240000/130), delay: (240000/130)*(+d.year - 1950) + 500, x: 0, y: 50}}"
+            <rect 
+                in:fade="{{duration: 100, delay: (240000/130)*(+d.year - 1950) + 500, x: 0, y: 50}}"
+                out:fade
                 x={xScale(xAccessor(d))}
                 y={0}
                 width={barWidth}
