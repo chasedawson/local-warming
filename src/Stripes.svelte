@@ -13,53 +13,48 @@
     export let xScale;
     export let colorScale;
 
+    // optional props
+    export let animate = false;
+
     // layout variables
     $: barWidth = xScale(xAccessor(data[1])) - xScale(xAccessor(data[0]));
 
-    const flyIn = (i) => {
-        // set duration and delay
-        let duration;
-        let delay;
-        if (+data[i].year < 1950) {
-            duration = 100;
-            delay = 100*i;
-        } else {
-            duration = 1000;
-            let k = 1949 - (+data[0].year);
-            delay = 100*k + 1000 * (i-k);
-        }
-            
-        return {
-            duration: duration,
-            y: 0, 
-            x: 200,
-            delay: delay
-        }
-    }
 
 </script>
 
 <g {transform}>
-    {#each data as d, i}
-        {#if +d.year < 1950}
+    {#if animate}
+        {#each data as d, i}
+            {#if +d.year < 1950}
+                <rect 
+                    transition:fade
+                    x={xScale(xAccessor(d)) - (barWidth / 2)}
+                    y={0}
+                    width={barWidth}
+                    {height}
+                    style="fill: {colorScale(colorAccessor(d))}"
+                />
+            {:else}
+                <rect 
+                    in:fade="{{duration: 100, delay: (240000/130)*(+d.year - 1950) + 500, x: 0, y: 50}}"
+                    out:fade
+                    x={xScale(xAccessor(d)) - (barWidth / 2)}
+                    y={0}
+                    width={barWidth}
+                    {height}
+                    style="fill: {colorScale(colorAccessor(d))}"
+                />
+            {/if}
+        {/each}
+    {:else}
+        {#each data as d, i}
             <rect 
-                transition:fade
-                x={xScale(xAccessor(d))}
+                x={xScale(xAccessor(d)) - (barWidth / 2)}
                 y={0}
                 width={barWidth}
                 {height}
                 style="fill: {colorScale(colorAccessor(d))}"
             />
-        {:else}
-            <rect 
-                in:fade="{{duration: 100, delay: (240000/130)*(+d.year - 1950) + 500, x: 0, y: 50}}"
-                out:fade
-                x={xScale(xAccessor(d))}
-                y={0}
-                width={barWidth}
-                {height}
-                style="fill: {colorScale(colorAccessor(d))}"
-            />
-        {/if}
-    {/each}
+        {/each}
+    {/if}
 </g>

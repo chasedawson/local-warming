@@ -1,7 +1,8 @@
 <script>
 	// imports 
-	import { line, scaleLinear, extent, ticks } from 'd3';
+	import { line, scaleLinear, extent, ticks, bisector } from 'd3';
 	import { draw } from 'svelte/transition';
+	import TooltipPoint from './TooltipPoint.svelte';
 	
 	// props
 	export let data;
@@ -41,6 +42,47 @@
 	$: yPath = `M 0 0 V ${chartHeight}`;
 	let yTicks = ticks(yExtent[0], yExtent[1], 10);
 
+	// tooltip
+	let bisect = bisector((d) => xAccessor(d)).center;
+
+	let m = {x: 0, y: 0};
+	let point = {x: xAccessor(data[0]), y: yAccessor(data[0])};
+	let tooltip = {width: 0, height: 0};
+	let toolipVisible = false;
+	let handleMouseMove = (event) => {
+		m.x = event.offsetX;
+		m.y = event.offsetY;
+
+		// returns closest point to our cur mouse position
+		let i = bisect(data, xScale.invert(m.x - margin.left));
+
+		point = {x: xAccessor(data[i]), y: yAccessor(data[i])};
+	}
+
+	let handleMouseOver = (event) => {
+		toolipVisible = true;
+	}
+
+	// TODO: implement
+	let handleFocus = (event) => {
+
+	}
+
+	let handleMouseOut = (event) => {
+		toolipVisible = false;
+	}
+
+	// TODO: implement
+	let handleBlur = (event) => {
+
+	}
+
+	let getTooltipDateLabel = (date) => {
+		return date.toLocaleString('default', { month: 'long' }) + ", " + date.getFullYear();
+	}
+
+
+
 </script>
 
 <div 
@@ -48,7 +90,28 @@
 	bind:offsetWidth={width}
 	bind:offsetHeight={height}
 >
-	<svg {width} {height}>
+
+	{#if toolipVisible}
+		<div 
+			bind:offsetWidth={tooltip.width}
+			bind:offsetHeight={tooltip.height}
+			class="tooltip" 
+			style="left: {margin.left + xScale(point.x) - (tooltip.width / 2)}px; top: {margin.top + yScale(point.y) - tooltip.height - 20}px;" 
+		>
+			<p class="date" >{getTooltipDateLabel(point.x)}</p>
+			<hr />
+			<p class="co2">{`${point.y} ppm`}</p>
+
+		</div>
+	{/if}
+
+	<svg {width} {height} 
+	
+		on:mousemove={handleMouseMove} 
+		on:mouseover={handleMouseOver}
+		on:mouseout={handleMouseOut}
+		on:focus={handleFocus}
+		on:blur={handleBlur}>
 
 		<!-- x axis -->
 		<g transform="translate({margin.left}, {height - margin.bottom})">
@@ -93,7 +156,13 @@
 				class="co2-line"
 			/>
 		</g>
+
+		{#if toolipVisible}
+			<TooltipPoint x={margin.left + xScale(point.x)} y={margin.top + yScale(point.y)} fill="#A31A2C"/>
+		{/if}
 	</svg>
+
+
 </div>
 
 <style>
@@ -116,13 +185,36 @@
 		font-weight: 200;
 	}
 
+	.tooltip {
+		box-shadow: 1px 1px 6px #cecece;
+		position: absolute;
+		z-index: 10;
+		background-color: white;
+		padding: 10px;
+	}
 
+	.tooltip p {
+		padding: 0px 0px 0px 0px;
+		margin: 0px;
+	}
 
-	/* @keyframes draw {
-		to {
-			stroke-dashoffset: 0;
-		}
-	} */
+	.tooltip .date {
+		font-weight: 200;
+		font-size: 12px;
+		text-align: left;
+	}
 
+	.tooltip .co2 {
+		font-size: 14px;
+		text-align: left;
+	}
+
+	.tooltip hr {
+		border-style: solid none none none;
+		border-top: 1px solid #ccc;
+		padding: 0px;
+		margin-top: 2px;
+		margin-bottom: 5px;
+	}
 
 </style>

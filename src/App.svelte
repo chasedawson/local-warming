@@ -7,6 +7,7 @@
 	import ExploreTool from './ExploreTool.svelte';
 	import Scroll from './Scrolly.svelte';
 	import ScatterPlot from './ScatterPlot.svelte';
+	import MultiStripes from './MultiStripes.svelte';
 	
 	// variables
 	let data;
@@ -15,7 +16,7 @@
 	let countyDataIsLoaded;
 	let currentStep;
 	let selected;
-	let stepTracker = [undefined, undefined];
+	let stepTracker = [undefined, undefined, undefined];
 	
 	// only ever want one sounds / media file to be played at once, so 
 	// create global var to control setting and playing of media
@@ -54,7 +55,9 @@
 			"<p>CO2 is only part of the picture. To better understand the relationship between CO2 and warming, we also need to look at global temperature.</p>",
 			"<p>Temperature anomaly is a common way of talking about warming relative to the baseline period, often preindustrial times. Each stripe represents temperature change in °C  relative to the 20th century average.</p>",
 			"<p>Use the play button below to hear our encoding of temperature. We mapped temperature anomalies to a melody played in varying octaves. A year lasts 4 beats. Higher sounding melodies means that year was warmer.</p> <button>play</button>",
-			"<p>Toggle Again!</p>"
+		],
+		[
+			"<p>multi-heat stripes</p>"
 		]
 	];
 	
@@ -152,6 +155,30 @@
 	</div>
 	
 	<div class="spacer" />
+
+	<div class="section-container">
+		<div class="steps-container">
+			<Scroll bind:value={stepTracker[2]}>
+				{#each steps[2] as text, i}
+				<div class="step" class:active={stepTracker[2] === i}>
+					<div class="step-content">
+						{@html text}
+					</div>
+				</div>
+				{/each}
+			</Scroll>
+		</div>
+		<div class="sticky">
+			{#if dataIsLoaded}
+				<div class="graphic3-container">
+					<MultiStripes data={data.local_temp} />
+				</div>
+			{/if}
+		</div>
+	</div>
+
+	<div class="spacer" /> 
+	
 
 	{#if dataIsLoaded}
 		<ExploreTool {data} {audio} />
@@ -263,6 +290,10 @@
 	}
 
 	.graphic2-container {
+		height: 60vh;
+	}
+
+	.graphic3-container {
 		height: 60vh;
 	}
 

@@ -12,6 +12,7 @@
     export let xScale;
     export let yScale;
     export let transform;
+    export let animate;
 
     $: path = line()
         .x(d => xScale(xAccessor(d)))
@@ -22,13 +23,23 @@
 </script>
 
 <g {transform}>
-    <path in:draw="{{duration: 63*(240000/130), delay: 9*(240000/130) + 500, easing: t => t}}"
-        class="line"  
-        d="{path(data)}"
-        fill="none"
-        stroke="#A31A2C"
-        stroke-width=2        
-    />
+    {#if animate}
+        <path in:draw="{{duration: 63*(240000/130), delay: 9*(240000/130) + 500, easing: t => t}}"
+            class="line"  
+            d="{path(data)}"
+            fill="none"
+            stroke="#A31A2C"
+            stroke-width=2        
+        />
+    {:else}
+        <path
+            class="line"  
+            d="{path(data)}"
+            fill="none"
+            stroke="#A31A2C"
+            stroke-width=2        
+        />
+    {/if}
 </g>
 
 <style>

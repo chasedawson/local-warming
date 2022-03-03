@@ -71,27 +71,31 @@
     let audio;
     // let counties = [3, 65, 79, 109, 125, 540];
     let counties = new Map([[3, "Albemarle"], [65, "Fluvanna"], [79, "Greene"], [109, "Louisa"], [125, "Nelson"], [540, "Charlottesville City"]]);
-    let show = false;
+    let show = true;
     let isPlaying = false;
+    let animate = false;
 
     let selectChange = () => {
         if (audio) audio.pause();
         isPlaying = false;
-        show = false;
+        animate = false;
     };
 
     let play = () => {
         show = true;
+        animate = true;
     }
 
     let playToggle = () => {
         if (isPlaying) {
             isPlaying = false;
-            show = false;
+            show = true;
+            animate = false;
             if (audio) audio.pause();
         } else {
             isPlaying = true;
             show = true;
+            animate = true;
             src = `data/local_county_${selected}_v1.wav`;
             audio = new Audio(src);
             audio.play();
@@ -180,6 +184,7 @@
                 xScale={heat_xScale}
                 yScale={co2_yScale}
                 duration={10000}
+                {animate}
             />
 
             <Stripes 
@@ -190,6 +195,8 @@
                 xScale={heat_xScale}
                 colorScale={heat_colorScale}
                 height={chartHeight}
+                {animate}
+
             />
 
         {/if}
