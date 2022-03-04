@@ -137,7 +137,7 @@
 				<span style="text-decoration: line-through">Global</span> Local Warming
 			</h1>
 			<h3>
-				By Chase Dawson
+				By Chase Dawson, Michele Claibourn, and Michael Salgueiro
 			</h3>
 		</div>
 
