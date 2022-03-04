@@ -1,22 +1,17 @@
 <script>
 	import { onMount } from 'svelte';
 	import { csv } from 'd3';
-	import { tweened } from 'svelte/motion';
 	import LinePlot from './LinePlot.svelte';
 	import HeatStripes from './HeatStripes.svelte';
 	import ExploreTool from './ExploreTool.svelte';
 	import Scroll from './Scrolly.svelte';
-	import ScatterPlot from './ScatterPlot.svelte';
 	import MultiStripes from './MultiStripes.svelte';
 	
 	// variables
 	let data;
-	let countyData;
 	let dataIsLoaded;
-	let countyDataIsLoaded;
-	let currentStep;
-	let selected;
 	let stepTracker = [undefined, undefined, undefined];
+	let isPlaying = false;
 	
 	// only ever want one sounds / media file to be played at once, so 
 	// create global var to control setting and playing of media
@@ -46,18 +41,19 @@
 	
 	const steps = [
 		[
-			"<p>Global warming first became a public issue on June 23, 1988, when the undeniable link between greenhouse gas emissions and global temperatures was presented before the U.S. Senate Energy and Natural Resources Committee. Of course, this was hardly the first time anyone had spoken about the issue–yet it marked the moment in which the climate crisis entered public consciousness.</p>",
-			"<p>By now, most of us are all too familiar with the chart on the right, marking the steady, ever-increasing carbon dioxide (CO2) emissions in our atmosphere. Of course, CO2 is just one of many greenhouse gasses emitted by human activities, yet it is our most abundantly produced.</p>",
-			"<p>In this story, we’re asking not just how CO2 has impacted global temperatures but also how will global warming impact us here in Charlottesville? We combine visualization and sonification techniques so that you’re not just seeing the changes in your home–you’re hearing them as well. Hopefully, you walk away with a greater understanding of how global warming is going to affect you here, locally.</p>",
-			"<p>To accomplish that, you must get acquainted with the sonification elements. Use the play button below to hear our encoding of CO2. We mapped the CO2 levels in parts per million to the pitch of a siren-y note–you should hear it get higher and higher with time.</p> <button>play</button>"
+			"<p>Global warming first became a public issue on June 23, 1988, when the undeniable link between greenhouse gas emissions and global temperatures was presented before the U.S. Senate Energy and Natural Resources Committee. Of course, this was hardly the first time anyone had spoken about the issue, yet it marked the moment in which the climate crisis entered public consciousness. </p>",
+			"<p>By now, most of us are all too familiar with the chart on the right, marking the steady, ever-increasing carbon dioxide (CO2) emissions in our atmosphere. CO2 is just one of many greenhouse gasses emitted by human activities, but it is our most abundantly produced. </p>",
+			"<p>n this story, we’re asking not just how CO2 has impacted global temperatures but also how is global warming impacting  us here in Charlottesville? We combine audio and visual techniques so that you’re not just seeing the changes in your community–you’re hearing them as well. Hopefully, you walk away with a greater understanding of how global warming is going to affect you here, locally. </p>",
+			"<p>To accomplish that, you must get acquainted with the audio  elements. Use the play button below to hear our encoding of CO22. We mapped the CO2 levels in parts per million to the pitch of a siren-y note–you should hear it get higher and higher with time.  </p>"
 		],
 		[
-			"<p>CO2 is only part of the picture. To better understand the relationship between CO2 and warming, we also need to look at global temperature.</p>",
-			"<p>Temperature anomaly is a common way of talking about warming relative to the baseline period, often preindustrial times. Each stripe represents temperature change in °C  relative to the 20th century average.</p>",
-			"<p>Use the play button below to hear our encoding of temperature. We mapped temperature anomalies to a melody played in varying octaves. A year lasts 4 beats. Higher sounding melodies means that year was warmer.</p> <button>play</button>",
+			"<p>Carbon dioxide is only part of the picture. To better understand the relationship between greenhouse gasses and warming, we also need to look at global temperature. </p>",
+			"<p>Temperature anomaly is a common way of talking about warming relative to the baseline period, often preindustrial times. Each stripe represents temperature change in °Celsius relative to the 20th century average.</p>",
+			"<p>Use the play button below to hear our encoding of temperature. We mapped temperature anomalies to a melody played in varying octaves. A year lasts 4 beats, with higher sounding melodies meaning that year was warmer.</p>",
 		],
 		[
-			"<p>multi-heat stripes</p>"
+			"<p>To understand the impact of climate change here in Charlottesville, we examine the local data and compute temperature anomalies relative to the 20th century average. Local data is a bit noisier, which is why these heat stripes aren’t as smooth a gradient. </p>",
+			"<p>Finally, keep scrolling to use the audio-visual tool below to hear how climate change has impacted your community. Parts of the sonificiation are overlaid with media recordings from that year to provide greater context. For example, in 2005 you’ll hear a short clip from a White House press briefing following the aftermath of hurricane Katrina.</p>"
 		]
 	];
 	
@@ -69,7 +65,7 @@
 		// audio = new Audio('https://raw.githubusercontent.com/chasedawson/supreme-disco/main/co2.mp3');
 		// audio.play();
 	} else if (stepTracker[0] == 3) {
-		if (audio) audio.pause();
+		
 	} else if (stepTracker[1] == 2) {
 		// audio = new Audio('https://raw.githubusercontent.com/chasedawson/supreme-disco/main/warm_year.mp3');
 		// audio.play();
@@ -78,6 +74,57 @@
 	}
 	
 	let counties = [3, 65, 79, 109, 125, 540];
+
+	let co2_audio; 
+	let isCO2Playing = false;
+	let toggleCO2 = () => {
+		if (co2_audio) co2_audio.pause();
+		if (!isCO2Playing) {
+			let src = 'data/co2_isolated.wav';
+			co2_audio = new Audio(src);
+			co2_audio.onended = () => {
+				isCO2Playing = false;
+			}
+			co2_audio.play();
+		}
+		isCO2Playing = !isCO2Playing;
+	}
+
+	let heat_audio;
+	let isHeatPlaying = false;
+	let toggleHeat = () => {
+		if (heat_audio) heat_audio.pause();
+		if (!isHeatPlaying) {
+			let src = 'data/heat_isolated.wav';
+			heat_audio = new Audio(src);
+			heat_audio.onended = () => {
+				isHeatPlaying = false;
+			}
+			heat_audio.play();
+		}
+		isHeatPlaying = !isHeatPlaying;
+	}
+
+	let togglePlay = (i) => {
+		// always pause in case something else is playing
+		if (audio) audio.pause();
+
+		// if not currently playing, start playing
+		if (!isPlaying) {
+			if (i == 0) { // play co2 isolated
+				let src = 'data/co2_isolated.wav';
+				audio = new Audio(src);
+				audio.play();
+			} else if (i == 1) { // play heat isolated
+				let src = 'data/heat_isolated.wav';
+				audio = new Audio(src);
+				audio.play();
+			}
+		}
+
+		// toggle isPlaying
+		isPlaying = !isPlaying;
+	}
 	
 	
 	
@@ -85,12 +132,23 @@
 
 <section>
 	<div class="header">
-		<h1>
-			<span style="text-decoration: line-through">Global</span> Local Warming
-		</h1>
-		<h2>
-			By Chase Dawson
-		</h2>
+		<div class="title">
+			<h1>
+				<span style="text-decoration: line-through">Global</span> Local Warming
+			</h1>
+			<h3>
+				By Chase Dawson
+			</h3>
+		</div>
+
+		<div class="img-container">
+			<img src='data/everyoneatwall_cropped.jpeg' alt="">
+		</div>
+
+		<div class="description">
+			<p>Painted by a collaboration between local youth participating in the Boys & Girls Club summer camp, the Community Climate Collaborative (C3), and James "Jae" Johnson of the Bridge Progressive Arts Initiative, this mural located on the Red Cross building in the Rose Hill neigborhood of Charlottesville depicts 123 years of local climate change.</p>
+			<p>This project, by the Democratization of Data Initiative at the Equity Center, builds on that art project and explores the underlying climate data, applying audio-visual techniques to give viewers more ways to experience how the local climate is changing. </p>
+		</div>
 	</div>
 	
 	<div class="section-container">
@@ -100,6 +158,12 @@
 				<div class="step" class:active={stepTracker[0] === i}>
 					<div class="step-content">
 						{@html text}
+						<!-- add play button on correct step -->
+						{#if i == 3}
+							<button class="play-btn" on:click={toggleCO2}>
+								{isCO2Playing ? "stop" : "play"}
+							</button>
+						{/if}
 					</div>
 				</div>
 				{/each}
@@ -132,6 +196,11 @@
 				<div class="step" class:active={stepTracker[1] === i}>
 					<div class="step-content">
 						{@html text}
+						{#if i === 2}
+							<button class="play-btn" on:click={toggleHeat}>
+								{isHeatPlaying ? "stop" : "play"}
+							</button>
+						{/if}
 					</div>
 				</div>
 				{/each}
@@ -215,15 +284,30 @@
 
 <style>
 	.header {
-		height: 80vh;
+		height: 90vh;
 		display: flex;
 		flex-direction: column;
 		place-items: center;
-		margin-top: 20vh;
+		margin-top: 10vh;
+	}
+
+	.title {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		margin-bottom: 20px;
+		box-shadow: 1px 1px 6px #cecece;
+		padding: 20px;
+		border-radius: 10px;
+	}
+
+	.title h1 {
+		margin: 0px 5px 0px 0px;
 	}
 	
-	.header h2 {
-		margin-top: 0%;
+	.header h3 {
+		margin: 0px 0px 5px 0px;
 		font-weight: 200;
 	}
 	.sticky {
@@ -297,6 +381,13 @@
 		height: 60vh;
 	}
 
+	.img-container img {
+		height: 400px;
+	}
+
+	.header .description {
+		width: 50%
+	}
 
 </style>
 

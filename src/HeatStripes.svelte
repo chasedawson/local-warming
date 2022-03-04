@@ -10,6 +10,7 @@
 		bisector } from 'd3';
 	import { tweened } from 'svelte/motion';
 	import { fade } from 'svelte/transition';
+    import ColorGradientLegend from "./ColorGradientLegend.svelte";
 	
 	// props
 	export let data;
@@ -21,7 +22,7 @@
 	let width;
 	let height; // set here and also in style
 	$: barWidth = xScale(xAccessor(data[1])) - xScale(xAccessor(data[0]));
-	const margin = { top: 30, bottom: 40, left: 50, right: 30 };
+	const margin = { top: 80, bottom: 40, left: 50, right: 30 };
 	$: chartHeight = height - margin.top - margin.bottom;
 	$: chartWidth = width - margin.left - margin.right;
 
@@ -56,13 +57,14 @@
 	}
 	
 	// scales
-	let xExtent = extent(data.map(d => xAccessor(d)));
-	// let xExtent = [1880, 2020];
+	// let xExtent = extent(data.map(d => xAccessor(d)));
+	let xExtent = [1880, 2020];
 	$: xScale = scaleLinear()
 		.domain(xExtent)
 		.range([0, chartWidth]);
 	
-	let yExtent = extent(data.map(d => yAccessor(d)));
+	// let yExtent = extent(data.map(d => yAccessor(d)));
+	let yExtent = [-0.5, 1];
 
 	$: yScale = scaleLinear()
 		.domain(yExtent)
@@ -141,6 +143,16 @@
 	
 	{#if width}
 		<svg {width} {height}>
+			<!-- legend -->
+			<ColorGradientLegend 
+				title="Temperature Anomaly (°C)"
+				width=200
+				height=10
+				interpolater={t => interpolateRdBu(1 - t)}
+				transform="translate({margin.left + 20}, {margin.top / 2})"
+				colorDomain={yExtent}
+			/>
+
 			<!-- x axis -->
 			<g transform="translate({margin.left}, {height - margin.bottom})">
 				<path stroke="#ccc" d="{xPath}" fill="none" />

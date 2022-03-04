@@ -41,7 +41,7 @@
         {#each labels as l}
             <g class="label" transform="translate({xScale(l)}, {height})">
                 <text dy="15" text-anchor="middle">
-                    {Math.round(l, 2)}
+                    {Math.round(l*10) / 10}
                 </text>
             </g>
         {/each}
