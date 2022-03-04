@@ -170,11 +170,11 @@
 		height: 100%;
 		max-width: 100%;
 		border-radius: 5px;
-		box-shadow: 1px 1px 6px #cecece;
+		/* box-shadow: 1px 1px 6px #cecece; */
 	}
 
 	.axis-label {
-		font-weight: bold;
+		font-weight: 300;
 	}
 
 	.ytick text {

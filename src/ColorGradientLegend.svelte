@@ -62,6 +62,7 @@
 
     .title {
         font-size: 16px;
+        font-weight: 300;
     }
 
     .label text {

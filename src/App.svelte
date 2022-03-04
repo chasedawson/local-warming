@@ -42,18 +42,18 @@
 	const steps = [
 		[
 			"<p>Global warming first became a public issue on June 23, 1988, when the undeniable link between greenhouse gas emissions and global temperatures was presented before the U.S. Senate Energy and Natural Resources Committee. Of course, this was hardly the first time anyone had spoken about the issue, yet it marked the moment in which the climate crisis entered public consciousness. </p>",
-			"<p>By now, most of us are all too familiar with the chart on the right, marking the steady, ever-increasing carbon dioxide (CO2) emissions in our atmosphere. CO2 is just one of many greenhouse gasses emitted by human activities, but it is our most abundantly produced. </p>",
-			"<p>n this story, we’re asking not just how CO2 has impacted global temperatures but also how is global warming impacting  us here in Charlottesville? We combine audio and visual techniques so that you’re not just seeing the changes in your community–you’re hearing them as well. Hopefully, you walk away with a greater understanding of how global warming is going to affect you here, locally. </p>",
-			"<p>To accomplish that, you must get acquainted with the audio  elements. Use the play button below to hear our encoding of CO22. We mapped the CO2 levels in parts per million to the pitch of a siren-y note–you should hear it get higher and higher with time.  </p>"
+			"<p>By now, most of us are all too familiar with the chart on the right, marking the steady, ever-increasing carbon dioxide (CO2) emissions in our atmosphere. CO2 is just one of many greenhouse gasses emitted by human activities, but it is our most abundantly produced. Many of the things we do daily contribute to our carbon footprint, with flying, driving gas-powered vehicles, and eating meat being among the most carbon-intensive individual actions.</p>",
+			"<p>In this story, we’re asking not just how CO2 has impacted global temperatures but also how is global warming impacting  us here in Charlottesville? We combine audio and visual techniques so that you’re not just seeing the changes in our local communities–you’re hearing them as well. Hopefully, you walk away with a greater understanding of how global warming is going to affect us locally. </p>",
+			"<p>To provide another way to perceive these changes, we mapped the CO2 levels in parts per million to the pitch of a siren-like note–you’ll hear it get higher and higher as CO2 levels rise. Use the play button to get acquainted with this first audio element.</p>"
 		],
 		[
-			"<p>Carbon dioxide is only part of the picture. To better understand the relationship between greenhouse gasses and warming, we also need to look at global temperature. </p>",
+			"<p>Carbon dioxide is only part of the picture. To better understand the relationship between greenhouse gasses and warming, we also need to look at global temperature. The figure to the right shows global temperature anomalies as stripes, with warmer years marked by deeper red.</p>",
 			"<p>Temperature anomaly is a common way of talking about warming relative to the baseline period, often preindustrial times. Each stripe represents temperature change in °Celsius relative to the 20th century average.</p>",
-			"<p>Use the play button below to hear our encoding of temperature. We mapped temperature anomalies to a melody played in varying octaves. A year lasts 4 beats, with higher sounding melodies meaning that year was warmer.</p>",
+			"<p>We mapped temperature anomalies to a repeating melody. Each year receives four beats, and the melody plays in higher octaves as the temperature rises. Use the play button below to hear our encoding of temperature. </p>",
 		],
 		[
-			"<p>To understand the impact of climate change here in Charlottesville, we examine the local data and compute temperature anomalies relative to the 20th century average. Local data is a bit noisier, which is why these heat stripes aren’t as smooth a gradient. </p>",
-			"<p>Finally, keep scrolling to use the audio-visual tool below to hear how climate change has impacted your community. Parts of the sonificiation are overlaid with media recordings from that year to provide greater context. For example, in 2005 you’ll hear a short clip from a White House press briefing following the aftermath of hurricane Katrina.</p>"
+			"<p>What do these changes look like locally? To understand the impact of climate change in the Charlottesville region, we’ve pulled data on local temperatures and computed temperature anomalies relative to the 20th century average.</p>",
+			"<p>Finally, keep scrolling to use the audio-visual tool to <span style='font-weight: 400;'>hear</span> how climate change has impacted our community. We’ve combined these two audio elements–the siren for CO2 levels and the shifting melody for temperature–to sonify local climate change. We’ve also overlaid media recordings tied to key years to provide more context. For example, in 2005 you’ll hear a short clip from a White House press briefing following the aftermath of hurricane Katrina.</p>"
 		]
 	];
 	
@@ -143,13 +143,17 @@
 
 		<div class="img-container">
 			<img src='data/everyoneatwall_cropped.jpeg' alt="">
+			<p>Photo Credits: Latricia Giles</p>
 		</div>
 
 		<div class="description">
 			<p>Painted by a collaboration between local youth participating in the Boys & Girls Club summer camp, the Community Climate Collaborative (C3), and James "Jae" Johnson of the Bridge Progressive Arts Initiative, this mural located on the Red Cross building in the Rose Hill neigborhood of Charlottesville depicts 123 years of local climate change.</p>
-			<p>This project, by the Democratization of Data Initiative at the Equity Center, builds on that art project and explores the underlying climate data, applying audio-visual techniques to give viewers more ways to experience how the local climate is changing. </p>
+			<p>This digital project, by the Democratization of Data Initiative at the Equity Center, builds on that art project and explores the underlying climate data, applying audio-visual techniques to give viewers more ways to experience how the local climate is changing.</p>
+			<p>Scroll down to begin!</p>
 		</div>
 	</div>
+
+	<div class="spacer" />
 	
 	<div class="section-container">
 		<div class="steps-container">
@@ -247,6 +251,8 @@
 	</div>
 
 	<div class="spacer" /> 
+
+	<h3 class="directions">Choose one of the localities in the Charlottesville region and hit the play button to listen to local climate change.</h3>
 	
 
 	{#if dataIsLoaded}
@@ -329,6 +335,7 @@
 		display: flex;
 		place-items: center;
 		justify-content: center;
+		font-weight: 200;
 	}
 	
 	.step-content {
@@ -385,8 +392,31 @@
 		height: 400px;
 	}
 
+	.img-container p {
+		font-weight: 200;
+		margin: 0px;
+		font-size: 12px;
+	}
+
 	.header .description {
-		width: 50%
+		width: 50%;
+		font-weight: 200;
+	}
+
+	span.emphasize {
+		font-weight: 400;
+	}
+
+	h3.directions {
+		text-align: center;
+		font-weight: 300;
+	}
+
+	.play-btn {
+		border-radius: 5px;
+		width: 4rem;
+		margin-left: auto; 
+		margin-right: auto;
 	}
 
 </style>

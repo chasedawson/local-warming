@@ -15,7 +15,7 @@
 
     // variables
     let width;
-    let height = 500;
+    let height;
     let margin = {top: 80, bottom: 30, left: 30, right: 130};
     $: chartWidth = width - margin.left - margin.right;
     $: chartHeight = height - margin.top - margin.bottom;
@@ -90,8 +90,8 @@
 </div>
 
 <style>
-    .MultiSripes {
-        height: 500px;
+    .MultiStripes {
+        height: 100%;
         max-width: 100%;
     }
 

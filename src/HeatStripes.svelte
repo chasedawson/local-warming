@@ -210,7 +210,7 @@
 		height: 100%; /* have to have height here and in code, will break chart otherwise */
 		max-width: 100%;
 		border-radius: 5px;
-		box-shadow: 1px 1px 6px #cecece;
+		/* box-shadow: 1px 1px 6px #cecece; */
 	}
 
 	.xtick text {

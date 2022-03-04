@@ -96,7 +96,7 @@
             isPlaying = true;
             show = true;
             animate = true;
-            src = `data/local_county_${selected}_v1.wav`;
+            src = `data/local_county_${selected}_v2.wav`;
             audio = new Audio(src);
             audio.play();
         }
